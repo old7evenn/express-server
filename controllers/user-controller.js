@@ -53,7 +53,7 @@ const UserController = {
 		if (!email || !password) return res.status(400).json({ error: 'All fields are required' })
     try {
       const isUser = await prisma.user.findUnique({ where: { email } })
-		  if (!isUser) return res.satus(400).json({ error: 'user with such email does not exist' })
+		  if (!isUser) return res.status(400).json({ error: 'user with such email does not exist' })
 
       const isValid = await bcrypt.compare(password, isUser.password)
       if (!isValid) return res.status(400).json({ error: 'Invalid password' })
@@ -85,7 +85,7 @@ const UserController = {
         }
       })
 
-      if (!user) return res.satus(400).json({ error: 'could not find user' })
+      if (!user) return res.status(400).json({ error: 'could not find user' })
 
       res.json(user)
     } catch (e) {
@@ -126,7 +126,7 @@ const UserController = {
   },
 	updateUser: async (req, res) => {
     const { id } = req.params
-    const {email, name, dateOfBirth, bio, location} = req.body
+    const {email, name, dataOfBirth, bio, location} = req.body
 
     let filePath
 
@@ -148,18 +148,18 @@ const UserController = {
       }
 
       const user = await prisma.user.update({
-        where: {
-          id
-        },
-        data: {
-          email: email || undefined,
-          name: name || undefined,
-          avatartUrl: filePath ? `/${filePath}` : undefined,
-          dateOfBirth: dateOfBirth || undefined, 
-          bio: bio || undefined,
-          location: location || undefined
-        }
-      })
+				where: {
+					id,
+				},
+				data: {
+					email: email || undefined,
+					name: name || undefined,
+					avatartUrl: filePath ? `/${filePath}` : undefined,
+					dataOfBirth: dataOfBirth || undefined,
+					bio: bio || undefined,
+					location: location || undefined,
+				},
+			})
 
       res.json(user)
     } catch (e) {

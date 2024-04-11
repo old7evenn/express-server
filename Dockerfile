@@ -1,33 +1,29 @@
+# Используем образ дистрибутив линукс Alpine с версией Node -14 Node.js
 FROM node:19.5.0-alpine
 
+# Указываем нашу рабочую дерикторию
 WORKDIR /app
 
-# Встановлення pnpm через npm
-RUN npm install -g pnpm
+# Копируем package.json и package-lock.json внутрь контейнера
+COPY package*.json ./
 
-# Копіюємо pnpm-lock.yaml та всі інші файли з проекту
-COPY pnpm-lock.yaml package.json ./
+# Устанавливаем зависимости
+RUN npm install
+
+# Копируем оставшееся приложение в контейнер
 COPY . .
 
-# Встановлюємо залежності з флагом --prod, щоб ігнорувати devDependencies
+# Устанавливаем Prisma
+RUN npm install -g prisma
 
-RUN pnpm install --frozen-lockfile --prod
-
-# Видаляємо глобальний prisma, якщо він встановлений
-RUN pnpm remove -g prisma || true
-
-ENV SHELL /bin/bash
-RUN pnpm setup
-RUN pnpm add -g prisma
-# Генеруємо моделі prisma
+# Генерируем Prisma client
 RUN prisma generate
 
-# Копіюємо файл схеми prisma
+# Копируем Prisma schema и URL базы данных в контейнер
 COPY prisma/schema.prisma ./prisma/
 
-# Використовуємо порт 3000
+# Открываем порт 3000 в нашем контейнере
 EXPOSE 3000
 
-# Запускаємо додаток
-CMD [ "pnpm", "start" ]
-
+# Запускаем сервер
+CMD [ "npm", "start" ]

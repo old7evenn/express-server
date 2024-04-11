@@ -25,7 +25,7 @@ router.post('/register', UserController.register)
 router.post('/login', UserController.login)
 router.get('/users/:id', authenticateToken, UserController.getUserById)
 router.get('/current', authenticateToken, UserController.current)
-router.put('/users/:id', authenticateToken, UserController.updateUser)
+router.put('/users/:id', authenticateToken, uploads.single('avatar'), UserController.updateUser)
 
 //Post
 router.post('/posts', authenticateToken, PostController.createPost)
