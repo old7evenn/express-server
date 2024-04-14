@@ -57,6 +57,7 @@ const UserController = {
 
       const isValid = await bcrypt.compare(password, isUser.password)
       if (!isValid) return res.status(400).json({ error: 'Invalid password' })
+      if (!secret) return res.status(400).json({ error: 'no secret' })
 
       const token = jwt.sign({ userId: isUser.id }, secret, { expiresIn: '30d' }) 
 
